@@ -94,13 +94,20 @@ def _chunks(b, indexes):
 
 def _fscodec():
     encoding = sys.getfilesystemencoding()
+
+    import codecs  # Use codecs.lookup() for name normalisation.
+    encoding = codecs.lookup(encoding).name
+    if encoding == 'ascii':
+        # force encoding to UTF-8 to use surrogate escape conversions
+        # when the encoding is bytes
+        encoding = 'utf-8'
+
     if encoding == 'mbcs':
         errors = 'strict'
     else:
         errors = 'surrogateescape'
 
     # XXX backport: Do we need to hack around Python 2's UTF-8 codec?
-    import codecs  # Use codecs.lookup() for name normalisation.
     _HACK_AROUND_PY2_UTF8 = (sys.version_info < (3,) and
                              codecs.lookup(encoding) == codecs.lookup('utf-8'))
 
