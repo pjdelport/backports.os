@@ -15,6 +15,65 @@ import unittest
 from hypothesis import given, example
 from hypothesis.strategies import text, binary
 
+
+class ExtraCoverageTests(unittest.TestCase):
+    """
+    Basic tests just to fill some coverage gaps.
+    """
+
+    def _assertRaisesMessage(self, excClass, excMessage, callableObj):
+        with self.assertRaises(excClass) as cm:
+            callableObj()
+        self.assertEqual(str(cm.exception), excMessage)
+
+    def test_getenv(self):
+        self.assertEqual(os.getenv('foo'), None)
+        self.assertEqual(os.getenv('foo', 'bar'), 'bar')
+
+        msg = ('unicode expected, not str' if sys.version_info < (3,) else
+               'str expected, not bytes')
+        self._assertRaisesMessage(TypeError, msg, lambda: os.getenv(b'foo'))
+        self._assertRaisesMessage(TypeError, msg, lambda: os.getenv(b'foo', b'bar'))
+
+    def test_getenvb(self):
+        self.assertEqual(os.getenvb(b'foo'), None)
+        self.assertEqual(os.getenvb(b'foo', b'bar'), b'bar')
+
+        msg = ('bytes expected, not unicode' if sys.version_info < (3,) else
+               'bytes expected, not str')
+        self._assertRaisesMessage(TypeError, msg, lambda: os.getenvb('foo'))
+        self._assertRaisesMessage(TypeError, msg, lambda: os.getenvb('foo', 'bar'))
+
+    def test_popen_errors(self):
+        self._assertRaisesMessage(
+            TypeError, ("invalid cmd type (<type 'str'>, expected string)"
+                        if sys.version_info < (3,) else
+                        "invalid cmd type (<class 'bytes'>, expected string)"),
+            lambda: os.popen(b'true'))
+
+        self._assertRaisesMessage(
+            ValueError, ("invalid mode u'x'" if sys.version_info < (3,) else
+                         "invalid mode 'x'"),
+            lambda: os.popen('true', mode='x'))
+
+        for buffering in [0, None]:
+            self._assertRaisesMessage(
+                ValueError, 'popen() does not support unbuffered streams',
+                lambda: os.popen('true', buffering=buffering))
+
+    def test_popen_for_write(self):
+        with os.popen('true', mode='w') as f:
+            self.assertEqual(f.buffer.mode, 'wb')
+        self.assertTrue(f.closed)
+
+    def test_environ_copy(self):
+        for environ in [os.environ, os.environb]:
+            d = environ.copy()
+            self.assertIsNot(d, environ)
+            self.assertIsInstance(d, dict)
+            self.assertEqual(d, environ)
+
+
 # Example data:
 
 HIGH_BYTES = (
@@ -97,9 +156,9 @@ class ExtraFSEncodingTests(unittest.TestCase):
 
 
 @unittest.skipIf(sys.version_info < (3,), 'Python 3 only')
-class TestAgainstPython3(unittest.TestCase):
+class TestFSEncodingAgainstPython3(unittest.TestCase):
     """
-    On Python 3, the backported implementations should match the standard library.
+    On Python 3, the backported fsencode() / fsdecode() should match the standard library.
     """
 
     @given(encodable_text())

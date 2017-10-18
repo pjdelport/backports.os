@@ -34,11 +34,31 @@ Supported Python versions
 Backported functionality
 ========================
 
-* `os.fsencode`_ (new in Python 3.2)
-* `os.fsdecode`_ (new in Python 3.2)
+Changed in Python 3:
 
-.. _`os.fsencode`: https://docs.python.org/3.5/library/os.html#os.fsencode
-.. _`os.fsdecode`: https://docs.python.org/3.5/library/os.html#os.fsdecode
+* `environ`_
+* `getenv`_
+* `popen`_
+
+.. _`environ`: https://docs.python.org/3.5/library/os.html#os.environ
+.. _`getenv`: https://docs.python.org/3.5/library/os.html#os.getenv
+.. _`popen`: https://docs.python.org/3.5/library/os.html#os.popen
+
+New in Python 3.2:
+
+* `environb`_
+* `fsdecode`_
+* `fsencode`_
+* `get_exec_path`_
+* `getenvb`_
+* `supports_bytes_environ`_
+
+.. _`environb`: https://docs.python.org/3.5/library/os.html#os.environb
+.. _`fsdecode`: https://docs.python.org/3.5/library/os.html#os.fsdecode
+.. _`fsencode`: https://docs.python.org/3.5/library/os.html#os.fsencode
+.. _`get_exec_path`: https://docs.python.org/3.5/library/os.html#os.get_exec_path
+.. _`getenvb`: https://docs.python.org/3.5/library/os.html#os.getenvb
+.. _`supports_bytes_environ`: https://docs.python.org/3.5/library/os.html#os.supports_bytes_environ
 
 
 Contributing
