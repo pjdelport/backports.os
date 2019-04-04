@@ -42,9 +42,9 @@ def _invalid_utf8_indexes(bytes):
                 # U+0080 - U+07FF - 11 bits
                 c = (((c1 & 0x1F) << 6) |
                      (c2 & 0x3F))
-                if c < 0x80:
+                if c < 0x80:  # pragma: no cover
                     # Overlong encoding
-                    skips.extend([i, i + 1])
+                    skips.extend([i, i + 1])  # pragma: no cover
                 i += 2
                 continue
             c3 = bytes[i + 2]
@@ -70,7 +70,7 @@ def _invalid_utf8_indexes(bytes):
                          (c2 & 0x3F)) << 6) |
                        (c3 & 0x3F)) << 6) |
                      (c4 & 0x3F))
-                if (c < 0x10000) or (c > 0x10FFFF):
+                if (c < 0x10000) or (c > 0x10FFFF):  # pragma: no cover
                     # Overlong encoding or invalid code point.
                     skips.extend([i, i + 1, i + 2, i + 3])
                 i += 4

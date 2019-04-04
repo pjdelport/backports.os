@@ -8,12 +8,6 @@ def README():
         return f.read()
 
 
-# Backward-compatibility dependencies for Python 2
-_python2_requires = [
-    'future',  # For backport of surrogateescape
-] if sys.version_info < (3,) else []
-
-
 setup(
     name='backports.os',
     description="Backport of new features in Python's os module",
@@ -29,7 +23,9 @@ setup(
     setup_requires=['setuptools_scm'],
     use_scm_version=True,
 
-    install_requires=_python2_requires,
+    install_requires=[
+        'future;python_version<"3.0"',  # For backport of surrogateescape
+    ],
 
     license='Python Software Foundation License',
     classifiers=[
